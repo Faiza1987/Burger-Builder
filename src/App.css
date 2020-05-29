@@ -2,3 +2,25 @@
   text-align: center;
 }
 
+.red {
+  color: red;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.buttonStyle {
+  background-color:green;
+  color: white;
+  font: inherit;
+  border: 1px solid black;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.buttonStyle:hover {
+  background-color: lightgreen;
+  color: firebrick;
+}
+

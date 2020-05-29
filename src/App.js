@@ -49,47 +49,47 @@ class App extends Component {
   }
 
   render() {
-    const buttonStyle = {
-      backgroundColor: '#fffafa',
-      font: 'inherit',
-      border: '2px solid red',
-      padding: '8px',
-      cursor: 'pointer'
-    }
-
     let persons = null;
     if(this.state.showPersons){
       persons = (
         <div>
           {
             this.state.people.map((person, index) => {
-              return <Person 
-                        key={person.id}
-                        name={person.name} 
-                        age={person.age}
-                        click={() => this.deletePersonHandler(index)}
-                        nameChange={(event) => this.switchNameAgeHandler(event, person.id)}
-                      />
+              return(
+                <Person 
+                  key={person.id}
+                  name={person.name} 
+                  age={person.age}
+                  click={() => this.deletePersonHandler(index)}
+                  nameChange={(event) => this.switchNameAgeHandler(event, person.id)}
+                />
+              )
             })
           }
         </div>
       );
+    };
+
+    let classes = [];
+    if(this.state.people.length <= 2){
+      classes.push('red'); // classes = ['red']
+    }
+
+    if(this.state.people.length <= 1){
+      classes.push('bold'); // classes = ['red', 'bold']
     }
 
     return (
-      // JSX
       <div className="App">
-        <h1>Hi, I am a React App </h1>
-        <p> This is actually working </p>
-
-        <button 
+        <h1>Hi, I am a React App! </h1>
+        <p className={classes.join(' ')}> This is really working! </p>
+        <button
+          className='buttonStyle'
           onClick={this.togglePersonsHandler}
-          style={buttonStyle}
-        > 
-          Show People
+        >   
+          Show People 
         </button>
-
-        {persons}
+        { persons }
       </div>
     );
   }
