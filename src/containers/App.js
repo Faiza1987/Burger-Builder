@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import classes from './App.css';
 import PersonsList from '../components/Persons/PersonList';
 import Cockpit from '../components/Cockpit';
+import withClass from '../hoc/withClass';
+import Auxiliary from '../hoc/Auxiliary';
+import AuthContext from '../context/auth-context';
 
 class App extends Component {
   constructor(props){
@@ -17,7 +20,9 @@ class App extends Component {
     ],
     otherState: 'some other value',
     showPersons: false,
-    showCockpit: true
+    showCockpit: true,
+    changeCounter: 0,
+    authenticated: false
   }
 
   // will be deprecated
@@ -58,8 +63,17 @@ class App extends Component {
     const persons = [...this.state.people];
     persons[personAtIndex] = person;
 
-    this.setState({
-      people: persons
+    // recommended if not depending on previous state
+    // this.setState({
+    //   people: persons
+    // });
+
+    // when you need previous state
+    this.setState((prevState, props) => {
+      return {
+        people: persons,
+        changeCounter: prevState.changeCounter + 1
+      };
     });
   }
 
@@ -79,6 +93,12 @@ class App extends Component {
     });
   }
 
+  loginHandler = () => {
+    this.setState({
+      authenticated: true
+    });
+  }
+
   render() {
     console.log("App.js render");
     let persons = null;
@@ -88,11 +108,12 @@ class App extends Component {
             people={this.state.people}
             clicked={this.deletePersonHandler}
             changed={this.switchNameAgeHandler}
+            // isAuthenticated={this.state.authenticated}
           />
     };
 
     return (
-      <div className={classes.App}>
+      <Auxiliary>
         <button 
           onClick={
             () => { 
@@ -102,16 +123,19 @@ class App extends Component {
           }}> 
           Hide Cockpit 
         </button>
-        {this.state.showCockpit ? <Cockpit
-          title={this.props.appTitle}
-          showPersons={this.state.showPersons}
-          peopleLength={this.state.people.length}
-          toggle={this.togglePersonsHandler}
-        /> : null}
-        { persons }
-      </div>
+        <AuthContext.Provider value={{authenticated: this.state.authenticated, login: this.loginHandler}}>
+          {this.state.showCockpit ? <Cockpit
+            title={this.props.appTitle}
+            showPersons={this.state.showPersons}
+            peopleLength={this.state.people.length}
+            toggle={this.togglePersonsHandler}
+            // login={this.loginHandler}
+          /> : null}
+          { persons }
+        </AuthContext.Provider>
+      </Auxiliary>
     );
   }
 }
 
-export default App;
+export default withClass(App, classes.App);
